@@ -10,13 +10,17 @@ import UIKit
 
 class MainTableViewController: UITableViewController {
     
-    var labels = ["parent", "parent", "parent", "parent", "parent"]
-    var allLabels: [Label]!
+    var labels = ["header", "Mumbai", "Delhi", "Chennai", "Kolkata", "Bengaluru", "Hyderabad"]
+    var isExpanded = false
+    var childCells = 0
+    var selectedIndex: Int!
+    var allLabels: [Label] = []
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        for i in 0 ..< 5 {
+        for i in 0 ..< labels.count {
             
             var myChild: [String] = []
             
@@ -50,27 +54,60 @@ class MainTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        appendIntoLabel(thisArray: allLabels[indexPath.row].child, atIndex: indexPath.row)
-        
+        if (isExpanded == true) {
+            if(selectedIndex == (indexPath as NSIndexPath).item) {
+                
+                isExpanded = false
+                print("in if statement 1")
+                expandParent(isExpanded, index: selectedIndex)
+                
+            }
+                
+            else {
+                let prevIndex = selectedIndex
+                expandParent(false, index: selectedIndex)
+                isExpanded = true
+                if(prevIndex! < (indexPath as NSIndexPath).item) {
+                    selectedIndex = (indexPath as NSIndexPath).item - childCells
+                    print("in if statement 2")
+                } else {
+                    selectedIndex = (indexPath as NSIndexPath).item
+                    print("in if statement 4")
+                }
+                
+                expandParent(isExpanded, index: selectedIndex)
+                
+            }
+            
+            
+        }
+            
+        else {
+            isExpanded = true
+            selectedIndex = (indexPath as NSIndexPath).item
+            print("in if statement 3")
+            expandParent(isExpanded, index: (indexPath as NSIndexPath).item)
+        }
     }
     
-    func appendIntoLabel(thisArray: [String], atIndex: Int) {
+    func expandParent(_ isExpanded: Bool, index: Int) -> Void {
         
-        for label in labels {
+        if(isExpanded == true) {
             
-            if label == "child" {
-                
-                labels.remove(at: labels.index(of: label)!)
+            childCells = allLabels[index].child.count + 1
+            for j in 0 ..< childCells {
+                labels.insert("child", at: index + 1 + j)
             }
+            tableView.reloadData()
         }
-        
-        for eachString in thisArray {
             
-            let index = thisArray.index(of: eachString)
-            labels.insert(eachString, at: atIndex + index!)
+        else if(isExpanded == false) {
+            
+            for _ in 0 ..< childCells {
+                labels.remove(at: index+1)
+            }
+            tableView.reloadData()
             
         }
-        
-        tableView.reloadData()
     }
 }
