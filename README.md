@@ -10,4 +10,4 @@ Download the project and run it to watch magic unfold!
 TODO
 ----
 
-Make a pod out of it
+* Make a pod out of it
