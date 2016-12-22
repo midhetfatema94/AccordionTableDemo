@@ -10,27 +10,17 @@ import UIKit
 
 class MainTableViewController: UITableViewController {
     
-    var labels = ["header", "Mumbai", "Delhi", "Chennai", "Kolkata", "Bengaluru", "Hyderabad"]
+    var labels: [String] = []
+    
     var isExpanded = false
     var childCells = 0
     var selectedIndex: Int!
     var allLabels: [Label] = []
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        for i in 0 ..< labels.count {
-            
-            var myChild: [String] = []
-            
-            for _ in 0 ..< i {
-                
-                myChild.append("child")
-            }
-            
-            allLabels.append(Label(object: ["parent": "parent", "child": myChild]))
-        }
+        initializeVar()
+        
     }
 
     // MARK: - Table view data source
@@ -90,6 +80,8 @@ class MainTableViewController: UITableViewController {
         }
     }
     
+    //MARK: - Expand Parent
+    
     func expandParent(_ isExpanded: Bool, index: Int) -> Void {
         
         if(isExpanded == true) {
@@ -109,5 +101,27 @@ class MainTableViewController: UITableViewController {
             tableView.reloadData()
             
         }
+    }
+    
+    //Initializing struct
+    
+    func initializeVar() {
+        
+        var flag = ["Header", "Mumbai", "Delhi", "Chennai", "Kolkata", "Bengaluru", "Hyderabad"]
+        
+        for i in 0 ..< flag.count {
+            
+            var myChild: [String] = []
+            
+            for _ in 0 ..< i {
+                
+                myChild.append("child")
+            }
+            
+            allLabels.append(Label(object: ["parent": "parent", "child": myChild]))
+        }
+        
+        labels = flag
+        tableView.reloadData()
     }
 }

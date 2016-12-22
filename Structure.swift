@@ -8,6 +8,7 @@
 
 import Foundation
 
+//Structure created to store all your objects of chil and parent cell here
 struct Label {
     var parent: String!
     var child: [String]!
