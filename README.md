@@ -12,7 +12,12 @@ Demo
 Run Example
 ----------
 
+``` git clone https://github.com/midhetfatema94/AccordionTableDemo.git
+```
+
 Download the project and run it to watch magic unfold!
+
+Please raise an issue if you come across any. :)
 
 TODO
 ----
