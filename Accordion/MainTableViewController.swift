@@ -10,118 +10,146 @@ import UIKit
 
 class MainTableViewController: UITableViewController {
     
-    var labels: [String] = []
+    var labels: [[String: Any]] = [["parent": "Mumbai", "child": ["child one"]], ["parent": "Delhi", "child": ["child one", "child one"]], ["parent": "Chennai", "child": ["child one", "child one", "child one"]], ["parent": "Kolkata", "child": ["child one", "child one", "child one", "child one", "child one"]], ["parent": "Bengaluru", "child": ["child one", "child one", "child one", "child one", "child one"]], ["parent": "Hyderabad", "child": ["child one", "child one", "child one", "child one", "child one"]]]
     
     var isExpanded = false
     var childCells = 0
-    var selectedIndex: Int!
-    var allLabels: [Label] = []
+    var selectedIndex = 0
+//    var allLabels: [Label] = []
+    var initialView = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        initializeVar()
+//        initializeVar()
         
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        initialView = false
     }
 
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return labels.count
+        return labels.count + childCells
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if labels[indexPath.row] == "child" {
+        if indexPath.row == selectedIndex - 1 {
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "childCell", for: indexPath)
             return cell
         }
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "parentCell", for: indexPath)
+        
+        if initialView {
+            cell.tag = indexPath.row + 1
+        }
+        
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        if (isExpanded == true) {
-            if(selectedIndex == (indexPath as NSIndexPath).item) {
+        let cell = tableView.cellForRow(at: indexPath)
+        
+        if cell?.tag != 0 {
+            
+            if isExpanded == true {
+                if selectedIndex == cell?.tag {
+                    
+                    isExpanded = false
+                    print("in if statement 1")
+                    expandParent(isExpanded: isExpanded, index: selectedIndex - 1)
+                    
+                }
+                    
+                else {
+                    
+                    let prevIndex = selectedIndex - 1
+                    expandParent(isExpanded: false, index: selectedIndex - 1)
+                    isExpanded = true
+                    if prevIndex < indexPath.row {
+                        
+                        self.selectedIndex = indexPath.row - self.childCells
+                        print("in if statement 2")
+                    
+                    } else {
+                        
+                        selectedIndex = (cell?.tag)!
+                        print("in if statement 4")
+                        
+                    }
+                    
+                    expandParent(isExpanded: isExpanded, index: selectedIndex)
+                    
+                }
                 
-                isExpanded = false
-                print("in if statement 1")
-                expandParent(isExpanded, index: selectedIndex)
                 
             }
                 
             else {
-                let prevIndex = selectedIndex
-                expandParent(false, index: selectedIndex)
                 isExpanded = true
-                if(prevIndex! < (indexPath as NSIndexPath).item) {
-                    selectedIndex = (indexPath as NSIndexPath).item - childCells
-                    print("in if statement 2")
-                } else {
-                    selectedIndex = (indexPath as NSIndexPath).item
-                    print("in if statement 4")
-                }
-                
-                expandParent(isExpanded, index: selectedIndex)
-                
+                selectedIndex = indexPath.row
+                print("in if statement 3")
+                expandParent(isExpanded: isExpanded, index: (cell?.tag)! - 1)
             }
             
-            
-        }
-            
-        else {
-            isExpanded = true
-            selectedIndex = (indexPath as NSIndexPath).item
-            print("in if statement 3")
-            expandParent(isExpanded, index: (indexPath as NSIndexPath).item)
+            tableView.reloadData()
         }
     }
     
     //MARK: - Expand Parent
     
-    func expandParent(_ isExpanded: Bool, index: Int) -> Void {
+    func expandParent(isExpanded: Bool, index: Int) -> Void {
         
-        if(isExpanded == true) {
+        if isExpanded == true {
             
-            childCells = allLabels[index].child.count + 1
-            for j in 0 ..< childCells {
-                labels.insert("child", at: index + 1 + j)
-            }
-            tableView.reloadData()
+            let childArray = labels[index]["child"] as! [String]
+            childCells = childArray.count + 1
+//            for j in 0 ..< childCells {
+//                labels.insert("child", at: index + 1 + j)
+//            }
+//            tableView.reloadData()
         }
             
-        else if(isExpanded == false) {
+        else if isExpanded == false {
             
-            for _ in 0 ..< childCells {
-                labels.remove(at: index+1)
-            }
-            tableView.reloadData()
-            
-        }
-    }
-    
-    //Initializing struct
-    
-    func initializeVar() {
-        
-        var flag = ["Header", "Mumbai", "Delhi", "Chennai", "Kolkata", "Bengaluru", "Hyderabad"]
-        
-        for i in 0 ..< flag.count {
-            
-            var myChild: [String] = []
-            
-            for _ in 0 ..< i {
-                
-                myChild.append("child")
-            }
-            
-            allLabels.append(Label(object: ["parent": "parent", "child": myChild]))
+            childCells = 0
         }
         
-        labels = flag
         tableView.reloadData()
     }
+//
+//    func collapseParent(index: Int) -> Void {
+//        
+//        
+//            
+//        
+//            
+//        
+//    }
+    //Initializing struct
+    
+//    func initializeVar() {
+//        
+//        
+//        for i in 0 ..< labels.count {
+//            
+//            var myChild: [String] = []
+//            
+//            for _ in 0 ..< i {
+//                
+//                myChild.append("child")
+//            }
+//            
+//            allLabels.append(Label(object: ["parent": "parent", "child": myChild]))
+//        }
+//        
+//        tableView.reloadData()
+//    }
 }
