@@ -12,6 +12,8 @@ class MainTableViewController: UITableViewController {
     
     var labels: [[String: Any]] = [["parent": "Mumbai", "child": ["child one"]], ["parent": "Delhi", "child": ["child one", "child one"]], ["parent": "Chennai", "child": ["child one", "child one", "child one"]], ["parent": "Kolkata", "child": ["child one", "child one", "child one", "child one", "child one"]], ["parent": "Bengaluru", "child": ["child one", "child one", "child one", "child one", "child one"]], ["parent": "Hyderabad", "child": ["child one", "child one", "child one", "child one", "child one"]]]
     
+    var arrayForTable: [String] = []
+    
     var isExpanded = false
     var childCells = 0
     var selectedIndex = 0
@@ -20,8 +22,17 @@ class MainTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        initializeVar()
         
+        initializeVar()
+        
+    }
+    
+    func initializeVar() {
+        
+        for label in labels {
+            
+            arrayForTable.append(label["parent"] as! String)
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -33,20 +44,22 @@ class MainTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return labels.count + childCells
+        return arrayForTable.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if indexPath.row == selectedIndex - 1 {
-            
-            let cell = tableView.dequeueReusableCell(withIdentifier: "childCell", for: indexPath)
-            return cell
-        }
+//        if indexPath.row == selectedIndex - 1 {
+//            
+//            let cell = tableView.dequeueReusableCell(withIdentifier: "childCell", for: indexPath)
+//            return cell
+//        }
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "parentCell", for: indexPath)
+        cell.textLabel?.text = arrayForTable[indexPath.row]
         
         if initialView {
+            
             cell.tag = indexPath.row + 1
         }
         
@@ -59,44 +72,31 @@ class MainTableViewController: UITableViewController {
         
         if cell?.tag != 0 {
             
-            if isExpanded == true {
+            if isExpanded {
+                
                 if selectedIndex == cell?.tag {
                     
                     isExpanded = false
                     print("in if statement 1")
-                    expandParent(isExpanded: isExpanded, index: selectedIndex - 1)
-                    
+                    expandParent(isExpanded: isExpanded, index: selectedIndex)
                 }
-                    
                 else {
                     
                     let prevIndex = selectedIndex - 1
-                    expandParent(isExpanded: false, index: selectedIndex - 1)
+                    expandParent(isExpanded: false, index: prevIndex)
+                    
                     isExpanded = true
-                    if prevIndex < indexPath.row {
-                        
-                        self.selectedIndex = indexPath.row - self.childCells
-                        print("in if statement 2")
-                    
-                    } else {
-                        
-                        selectedIndex = (cell?.tag)!
-                        print("in if statement 4")
-                        
-                    }
-                    
+                    selectedIndex = (cell?.tag)!
+                    print("in if statement 2")
                     expandParent(isExpanded: isExpanded, index: selectedIndex)
-                    
                 }
-                
-                
             }
-                
             else {
+                
                 isExpanded = true
-                selectedIndex = indexPath.row
+                selectedIndex = (cell?.tag)!
                 print("in if statement 3")
-                expandParent(isExpanded: isExpanded, index: (cell?.tag)! - 1)
+                expandParent(isExpanded: isExpanded, index: selectedIndex - 1)
             }
             
             tableView.reloadData()
@@ -107,20 +107,30 @@ class MainTableViewController: UITableViewController {
     
     func expandParent(isExpanded: Bool, index: Int) -> Void {
         
-        if isExpanded == true {
+        let childArray = labels[index]["child"] as! [String]
+        childCells = childArray.count + 1
+        
+        if isExpanded {
             
-            let childArray = labels[index]["child"] as! [String]
-            childCells = childArray.count + 1
-//            for j in 0 ..< childCells {
-//                labels.insert("child", at: index + 1 + j)
-//            }
-//            tableView.reloadData()
+            for j in 0 ..< childCells {
+                
+                print("add index", index+j+1)
+                arrayForTable.insert("child\(index + 1 + j)", at: index + 1 + j)
+            }
         }
+        else {
             
-        else if isExpanded == false {
+//            var arrayIndices: [Int] = []
             
-            childCells = 0
+            for j in 0 ..< childCells - 1 {
+                
+                print("remove index", index+j)
+                arrayForTable.remove(at: index)
+                print("array for table is", arrayForTable)
+            }
         }
+        
+        print("array for table is", arrayForTable)
         
         tableView.reloadData()
     }
@@ -152,4 +162,15 @@ class MainTableViewController: UITableViewController {
 //        
 //        tableView.reloadData()
 //    }
+}
+
+extension Array {
+    
+    mutating func remove(at indexes: [Int]) {
+        
+        for index in indexes.sorted(by: >) {
+            
+            remove(at: index)
+        }
+    }
 }
