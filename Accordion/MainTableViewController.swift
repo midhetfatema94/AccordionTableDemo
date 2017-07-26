@@ -35,10 +35,12 @@ class MainTableViewController: UITableViewController {
         if labels[indexPath.row] == "child" {
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "childCell", for: indexPath)
+            cell.textLabel?.text = labels[indexPath.row]
             return cell
         }
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "parentCell", for: indexPath)
+        cell.textLabel?.text = labels[indexPath.row]
         return cell
     }
 
@@ -87,7 +89,9 @@ class MainTableViewController: UITableViewController {
         if(isExpanded == true) {
             
             childCells = allLabels[index].child.count + 1
+            
             for j in 0 ..< childCells {
+                
                 labels.insert("child", at: index + 1 + j)
             }
             tableView.reloadData()
@@ -96,10 +100,10 @@ class MainTableViewController: UITableViewController {
         else if(isExpanded == false) {
             
             for _ in 0 ..< childCells {
-                labels.remove(at: index+1)
+                
+                labels.remove(at: index + 1)
             }
             tableView.reloadData()
-            
         }
     }
     
@@ -107,7 +111,7 @@ class MainTableViewController: UITableViewController {
     
     func initializeVar() {
         
-        var flag = ["Header", "Mumbai", "Delhi", "Chennai", "Kolkata", "Bengaluru", "Hyderabad"]
+        let flag = ["Mumbai", "Delhi", "Chennai", "Kolkata", "Bengaluru", "Hyderabad"]
         
         for i in 0 ..< flag.count {
             
@@ -118,7 +122,7 @@ class MainTableViewController: UITableViewController {
                 myChild.append("child")
             }
             
-            allLabels.append(Label(object: ["parent": "parent", "child": myChild]))
+            allLabels.append(Label(object: ["parent": flag[i], "child": myChild]))
         }
         
         labels = flag
