@@ -12,9 +12,7 @@ import Foundation
 struct Label {
     var parent: String!
     var child: [String]!
-    
-    init(object: Dictionary<String, Any>) {
-        
+    init(object: [String: Any]) {
         self.parent = object["parent"] as! String
         self.child = object["child"] as! Array
     }
