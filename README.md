@@ -5,9 +5,9 @@ Accordion Table Demo is an example to make expandable table view cells with chil
 It is built in Swift.
 
 ### Demo
-----
 
 ![Gif demo run of project](http://g.recordit.co/FxfpoIxfiS.gif)
+
 
 ### Run Example
 ----------
@@ -20,7 +20,6 @@ Download the project and run it to watch magic unfold!
 
 Please raise an issue if you come across any. :)
 
-#### TODO
-----
 
+#### TODO
 * Make a ``pod`` out of it
